@@ -1,194 +1,176 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Comparativa de Herramientas de Vibe Coding</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
     <div class="container">
-        <h1>Comparativa de Herramientas de Vibe Coding</h1>
-        <p class="subtitle">Evaluación en escala 1-5 (5 = mejor)</p>
+      <h1>Comparativa de Herramientas de Vibe Coding</h1>
+      <p class="subtitle">Evaluación en escala 1-5 (5 = mejor)</p>
 
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Herramienta</th>
-                        <th>UI/UX</th>
-                        <th>Costo</th>
-                        <th>Velocidad</th>
-                        <th>Dependencia<br>Plataforma</th>
-                        <th>Control</th>
-                        <th>Mantenibilidad</th>
-                        <th>Calidad del<br>Código</th>
-                        <th>Reutilización</th>
-                        <th>Tu Calificación<br>(1-5)</th>
-                        <th>Notas / Justificación</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="section-header">
-                        <td colspan="11">Plataformas de Vibe Coding</td>
-                    </tr>
-                    <tr class="row">
-                        <td>Vercel v0</td>
-                        <td><span class="score score-5">5</span></td>
-                        <td><span class="score score-3">3</span></td>
-                        <td><span class="score score-5">5</span></td>
-                        <td><span class="score score-2">2</span></td>
-                        <td><span class="score score-2">2</span></td>
-                        <td><span class="score score-1">1</span></td>
-                        <td><span class="score score-5">5</span></td>
-                        <td><span class="score score-1">1</span></td>
-                        <td>
-                            <div class="rating-cell">
-                                <span class="score score-unknown rating-display">?</span>
-                                <input type="number" min="1" max="5" class="rating-input" placeholder="?">
-                            </div>
-                        </td>
-                        <td class="notes-cell"><textarea class="notes-input" rows="2" placeholder="Justificá tu calificación..."></textarea></td>
-                    </tr>
-                    <tr class="row">
-                        <td>Replit</td>
-                        <td><span class="score score-4">4</span></td>
-                        <td><span class="score score-1">1</span></td>
-                        <td><span class="score score-4">4</span></td>
-                        <td><span class="score score-1">1</span></td>
-                        <td><span class="score score-1">1</span></td>
-                        <td><span class="score score-3">3</span></td>
-                        <td><span class="score score-5">5</span></td>
-                        <td><span class="score score-1">1</span></td>
-                        <td>
-                            <div class="rating-cell">
-                                <span class="score score-unknown rating-display">?</span>
-                                <input type="number" min="1" max="5" class="rating-input" placeholder="?">
-                            </div>
-                        </td>
-                        <td class="notes-cell"><textarea class="notes-input" rows="2" placeholder="Justificá tu calificación..."></textarea></td>
-                    </tr>
-                    <tr class="row">
-                        <td>Lovable</td>
-                        <td><span class="score score-5">5</span></td>
-                        <td><span class="score score-3">3</span></td>
-                        <td><span class="score score-4">4</span></td>
-                        <td><span class="score score-unknown">?</span></td>
-                        <td><span class="score score-3">3</span></td>
-                        <td><span class="score score-3">3</span></td>
-                        <td><span class="score score-4">4</span></td>
-                        <td><span class="score score-1">1</span></td>
-                        <td>
-                            <div class="rating-cell">
-                                <span class="score score-unknown rating-display">?</span>
-                                <input type="number" min="1" max="5" class="rating-input" placeholder="?">
-                            </div>
-                        </td>
-                        <td class="notes-cell"><textarea class="notes-input" rows="2" placeholder="Justificá tu calificación..."></textarea></td>
-                    </tr>
-                    <tr class="row">
-                        <td>Windsurf</td>
-                        <td><span class="score score-3">3</span></td>
-                        <td><span class="score score-5">5</span></td>
-                        <td><span class="score score-3">3</span></td>
-                        <td><span class="score score-5">5</span></td>
-                        <td><span class="score score-5">5</span></td>
-                        <td><span class="score score-5">5</span></td>
-                        <td><span class="score score-5">5</span></td>
-                        <td><span class="score score-5">5</span></td>
-                        <td>
-                            <div class="rating-cell">
-                                <span class="score score-unknown rating-display">?</span>
-                                <input type="number" min="1" max="5" class="rating-input" placeholder="?">
-                            </div>
-                        </td>
-                        <td class="notes-cell"><textarea class="notes-input" rows="2" placeholder="Justificá tu calificación..."></textarea></td>
-                    </tr>
-                    <tr class="row">
-                        <td>Cursor</td>
-                        <td><span class="score score-2">2</span></td>
-                        <td><span class="score score-4">4</span></td>
-                        <td><span class="score score-3">3</span></td>
-                        <td><span class="score score-5">5</span></td>
-                        <td><span class="score score-4">4</span></td>
-                        <td><span class="score score-5">5</span></td>
-                        <td><span class="score score-4">4</span></td>
-                        <td><span class="score score-5">5</span></td>
-                        <td>
-                            <div class="rating-cell">
-                                <span class="score score-unknown rating-display">?</span>
-                                <input type="number" min="1" max="5" class="rating-input" placeholder="?">
-                            </div>
-                        </td>
-                        <td class="notes-cell"><textarea class="notes-input" rows="2" placeholder="Justificá tu calificación..."></textarea></td>
-                    </tr>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Herramienta</th>
+              <th>UI/UX</th>
+              <th>Costo</th>
+              <th>Velocidad</th>
+              <th>Dependencia<br />Plataforma</th>
+              <th>Control</th>
+              <th>Mantenibilidad</th>
+              <th>Calidad del<br />Código</th>
+              <th>Reutilización</th>
+              <th>Tu Calificación<br />(1-5)</th>
+              <th>Notas / Justificación</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="section-header">
+              <td colspan="11">Plataformas de Vibe Coding</td>
+            </tr>
+            <tr class="row">
+              <td>Vercel v0</td>
+              <td><span class="score score-5">5</span></td>
+              <td><span class="score score-3">3</span></td>
+              <td><span class="score score-5">5</span></td>
+              <td><span class="score score-2">2</span></td>
+              <td><span class="score score-2">2</span></td>
+              <td><span class="score score-1">1</span></td>
+              <td><span class="score score-5">5</span></td>
+              <td><span class="score score-1">1</span></td>
+              <td><span class="score score-3">3</span></td>
+              <td class="notes-cell">
+                UI excelente y rápida, pero alta dependencia de Vercel. Código
+                difícil de mantener fuera de su ecosistema.
+              </td>
+            </tr>
+            <tr class="row">
+              <td>Replit</td>
+              <td><span class="score score-4">4</span></td>
+              <td><span class="score score-1">1</span></td>
+              <td><span class="score score-4">4</span></td>
+              <td><span class="score score-1">1</span></td>
+              <td><span class="score score-1">1</span></td>
+              <td><span class="score score-3">3</span></td>
+              <td><span class="score score-5">5</span></td>
+              <td><span class="score score-1">1</span></td>
+              <td><span class="score score-2">2</span></td>
+              <td class="notes-cell">
+                Costo muy alto, cero control y alta dependencia. Solo sirve para
+                prototipos rápidos.
+              </td>
+            </tr>
+            <tr class="row">
+              <td>Lovable</td>
+              <td><span class="score score-5">5</span></td>
+              <td><span class="score score-3">3</span></td>
+              <td><span class="score score-4">4</span></td>
+              <td><span class="score score-unknown">?</span></td>
+              <td><span class="score score-3">3</span></td>
+              <td><span class="score score-3">3</span></td>
+              <td><span class="score score-4">4</span></td>
+              <td><span class="score score-1">1</span></td>
+              <td><span class="score score-3">3</span></td>
+              <td class="notes-cell">
+                UI/UX top, buen código. Pendiente definir nivel de dependencia
+                de plataforma.
+              </td>
+            </tr>
+            <tr class="row">
+              <td>Windsurf</td>
+              <td><span class="score score-3">3</span></td>
+              <td><span class="score score-5">5</span></td>
+              <td><span class="score score-3">3</span></td>
+              <td><span class="score score-5">5</span></td>
+              <td><span class="score score-5">5</span></td>
+              <td><span class="score score-5">5</span></td>
+              <td><span class="score score-5">5</span></td>
+              <td><span class="score score-5">5</span></td>
+              <td><span class="score score-5">5</span></td>
+              <td class="notes-cell">
+                El más completo: control total, código reutilizable, sin
+                lock-in. UI funcional.
+              </td>
+            </tr>
+            <tr class="row">
+              <td>Cursor</td>
+              <td><span class="score score-2">2</span></td>
+              <td><span class="score score-4">4</span></td>
+              <td><span class="score score-3">3</span></td>
+              <td><span class="score score-5">5</span></td>
+              <td><span class="score score-4">4</span></td>
+              <td><span class="score score-5">5</span></td>
+              <td><span class="score score-4">4</span></td>
+              <td><span class="score score-5">5</span></td>
+              <td><span class="score score-4">4</span></td>
+              <td class="notes-cell">
+                IDE potente con buen control. UI mejorando pero aún por debajo
+                de las plataformas managed.
+              </td>
+            </tr>
 
-                    <tr class="section-header">
-                        <td colspan="11">Mi Stack de AI</td>
-                    </tr>
-                    <tr class="row">
-                        <td>OpenCode (Gentle AI)</td>
-                        <td><span class="score score-2">2</span></td>
-                        <td><span class="score score-4">4</span></td>
-                        <td><span class="score score-4">4</span></td>
-                        <td><span class="score score-5">5</span></td>
-                        <td><span class="score score-5">5</span></td>
-                        <td><span class="score score-4">4</span></td>
-                        <td><span class="score score-4">4</span></td>
-                        <td><span class="score score-5">5</span></td>
-                        <td>
-                            <div class="rating-cell">
-                                <span class="score score-unknown rating-display">?</span>
-                                <input type="number" min="1" max="5" class="rating-input" placeholder="?">
-                            </div>
-                        </td>
-                        <td class="notes-cell"><textarea class="notes-input" rows="2" placeholder="Justificá tu calificación..."></textarea></td>
-                    </tr>
-                    <tr class="row">
-                        <td>Claude Code (gratis)</td>
-                        <td><span class="score score-2">2</span></td>
-                        <td><span class="score score-5">5</span></td>
-                        <td><span class="score score-3">3</span></td>
-                        <td><span class="score score-3">3</span></td>
-                        <td><span class="score score-3">3</span></td>
-                        <td><span class="score score-3">3</span></td>
-                        <td><span class="score score-4">4</span></td>
-                        <td><span class="score score-2">2</span></td>
-                        <td>
-                            <div class="rating-cell">
-                                <span class="score score-unknown rating-display">?</span>
-                                <input type="number" min="1" max="5" class="rating-input" placeholder="?">
-                            </div>
-                        </td>
-                        <td class="notes-cell"><textarea class="notes-input" rows="2" placeholder="Justificá tu calificación..."></textarea></td>
-                    </tr>
-                    <tr class="row">
-                        <td>Gemini</td>
-                        <td><span class="score score-3">3</span></td>
-                        <td><span class="score score-4">4</span></td>
-                        <td><span class="score score-4">4</span></td>
-                        <td><span class="score score-2">2</span></td>
-                        <td><span class="score score-3">3</span></td>
-                        <td><span class="score score-3">3</span></td>
-                        <td><span class="score score-3">3</span></td>
-                        <td><span class="score score-2">2</span></td>
-                        <td>
-                            <div class="rating-cell">
-                                <span class="score score-unknown rating-display">?</span>
-                                <input type="number" min="1" max="5" class="rating-input" placeholder="?">
-                            </div>
-                        </td>
-                        <td class="notes-cell"><textarea class="notes-input" rows="2" placeholder="Justificá tu calificación..."></textarea></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+            <tr class="section-header">
+              <td colspan="11">Mi Stack de AI</td>
+            </tr>
+            <tr class="row">
+              <td>OpenCode (Gentle AI)</td>
+              <td><span class="score score-2">2</span></td>
+              <td><span class="score score-4">4</span></td>
+              <td><span class="score score-4">4</span></td>
+              <td><span class="score score-5">5</span></td>
+              <td><span class="score score-5">5</span></td>
+              <td><span class="score score-4">4</span></td>
+              <td><span class="score score-4">4</span></td>
+              <td><span class="score score-5">5</span></td>
+              <td><span class="score score-4">4</span></td>
+              <td class="notes-cell">
+                Sin UI visual, pero máximo control. Multi-modelo, skills
+                reutilizables, SDD para estructurar.
+              </td>
+            </tr>
+            <tr class="row">
+              <td>Claude Code (gratis)</td>
+              <td><span class="score score-2">2</span></td>
+              <td><span class="score score-5">5</span></td>
+              <td><span class="score score-3">3</span></td>
+              <td><span class="score score-3">3</span></td>
+              <td><span class="score score-3">3</span></td>
+              <td><span class="score score-3">3</span></td>
+              <td><span class="score score-4">4</span></td>
+              <td><span class="score score-2">2</span></td>
+              <td><span class="score score-3">3</span></td>
+              <td class="notes-cell">
+                Gratis y buen modelo, pero rate limits. Sin sistema de
+                reutilización nativo.
+              </td>
+            </tr>
+            <tr class="row">
+              <td>Gemini</td>
+              <td><span class="score score-3">3</span></td>
+              <td><span class="score score-4">4</span></td>
+              <td><span class="score score-4">4</span></td>
+              <td><span class="score score-2">2</span></td>
+              <td><span class="score score-3">3</span></td>
+              <td><span class="score score-3">3</span></td>
+              <td><span class="score score-3">3</span></td>
+              <td><span class="score score-2">2</span></td>
+              <td><span class="score score-3">3</span></td>
+              <td class="notes-cell">
+                Rápido y accesible, pero alta dependencia del ecosistema Google.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-        <footer>
-            Generado como parte de la comparativa de herramientas de Vibe Coding — 4Geeks Academy
-        </footer>
+      <footer>
+        Generado como parte de la comparativa de herramientas de Vibe Coding —
+        4Geeks Academy
+      </footer>
     </div>
-
-    <script src="app.js"></script>
-</body>
+  </body>
 </html>

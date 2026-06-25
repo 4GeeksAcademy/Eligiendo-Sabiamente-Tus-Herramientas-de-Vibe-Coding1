@@ -102,60 +102,6 @@ td:first-child {
     white-space: normal;
 }
 
-.rating-input {
-    width: 3rem;
-    padding: 0.25rem;
-    text-align: center;
-    border: 1px solid #d1d5db;
-    border-radius: 0.375rem;
-    font-size: 0.875rem;
-    background: #f9fafb;
-    transition: border-color 0.15s;
-    display: none;
-}
-
-.rating-input:focus {
-    outline: none;
-    border-color: #6366f1;
-    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
-}
-
-.rating-cell {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.rating-display {
-    cursor: pointer;
-    transition: transform 0.15s, box-shadow 0.15s;
-}
-
-.rating-display:hover {
-    transform: scale(1.1);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-}
-
-.notes-input {
-    width: 100%;
-    padding: 0.375rem;
-    border: 1px solid #d1d5db;
-    border-radius: 0.375rem;
-    font-size: 0.8rem;
-    font-family: inherit;
-    resize: vertical;
-    min-height: 2.5rem;
-    background: #f9fafb;
-    transition: border-color 0.15s;
-}
-
-.notes-input:focus {
-    outline: none;
-    border-color: #6366f1;
-    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
-}
-
 /* Score badges */
 .score {
     display: inline-block;
