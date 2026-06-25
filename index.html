@@ -1,932 +1,194 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vibe Coding — Tool Scoreboard</title>
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --excel-grid: #d0d0d0;
-    --excel-header-bg: #e8e8e8;
-    --excel-header-text: #1a1a1a;
-    --excel-row-num-bg: #ececec;
-    --excel-row-num-text: #666;
-    --excel-cell-bg: #fff;
-    --excel-selected: #0078d7;
-    --excel-selected-bg: #e8f0fe;
-    --excel-editing-border: #0078d7;
-    --excel-alt-row: #f8f8f8;
-    --excel-calc: #f0f0ff;
-    --excel-toolbar-bg: #f3f3f3;
-    --excel-formula-bg: #f9f9f9;
-    --font: 'Segoe UI', Calibri, 'Helvetica Neue', Arial, sans-serif;
-  }
-
-  body {
-    font-family: var(--font);
-    background: #e6e9ef;
-    padding: 20px;
-    color: #222;
-  }
-
-  /* ─── HEADER ─── */
-  .app-header {
-    max-width: 1400px;
-    margin: 0 auto 12px;
-  }
-  .app-header h1 {
-    font-size: 22px;
-    font-weight: 600;
-    color: #1a1a2e;
-    letter-spacing: -0.3px;
-  }
-  .app-header p {
-    font-size: 13px;
-    color: #555;
-    margin-top: 2px;
-  }
-
-  /* ─── TOOLBAR ─── */
-  .toolbar {
-    max-width: 1400px;
-    margin: 0 auto 8px;
-    background: var(--excel-toolbar-bg);
-    border: 1px solid #c0c0c0;
-    border-bottom: none;
-    border-radius: 4px 4px 0 0;
-    padding: 6px 12px;
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-  .toolbar button {
-    font-family: var(--font);
-    font-size: 12px;
-    padding: 4px 14px;
-    border: 1px solid #b0b0b0;
-    border-radius: 3px;
-    background: #fff;
-    cursor: pointer;
-    color: #333;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    transition: background 0.1s;
-  }
-  .toolbar button:hover { background: #e8e8e8; }
-  .toolbar button:active { background: #d0d0d0; }
-  .toolbar .sep {
-    width: 1px;
-    height: 22px;
-    background: #c0c0c0;
-    margin: 0 4px;
-  }
-  .toolbar .status-info {
-    margin-left: auto;
-    font-size: 12px;
-    color: #666;
-  }
-
-  /* ─── FORMULA BAR ─── */
-  .formula-bar {
-    max-width: 1400px;
-    margin: 0 auto;
-    background: var(--excel-formula-bg);
-    border: 1px solid #c0c0c0;
-    border-bottom: none;
-    padding: 4px 8px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-  }
-  .formula-bar .cell-ref {
-    font-weight: 600;
-    color: var(--excel-selected);
-    min-width: 48px;
-    padding: 2px 8px;
-    background: #fff;
-    border: 1px solid #c0c0c0;
-    text-align: center;
-    font-size: 12px;
-    user-select: none;
-  }
-  .formula-bar .cell-content {
-    flex: 1;
-    padding: 3px 8px;
-    border: 1px solid #c0c0c0;
-    background: #fff;
-    outline: none;
-    font-family: var(--font);
-    font-size: 13px;
-    min-height: 24px;
-    cursor: text;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .formula-bar .cell-content:focus {
-    border-color: var(--excel-selected);
-    box-shadow: 0 0 0 1px var(--excel-selected);
-  }
-
-  /* ─── SPREADSHEET CONTAINER ─── */
-  .spreadsheet-wrap {
-    max-width: 1400px;
-    margin: 0 auto;
-    overflow-x: auto;
-    border: 1px solid #c0c0c0;
-    border-radius: 0 0 4px 4px;
-    background: var(--excel-cell-bg);
-  }
-  .spreadsheet-wrap::-webkit-scrollbar { height: 10px; width: 10px; }
-  .spreadsheet-wrap::-webkit-scrollbar-track { background: #f0f0f0; }
-  .spreadsheet-wrap::-webkit-scrollbar-thumb { background: #c0c0c0; border-radius: 4px; }
-  .spreadsheet-wrap::-webkit-scrollbar-thumb:hover { background: #a0a0a0; }
-
-  .spreadsheet {
-    border-collapse: collapse;
-    width: 100%;
-    min-width: 1200px;
-    table-layout: fixed;
-    font-size: 13px;
-  }
-
-  /* ─── COLUMN WIDTHS ─── */
-  .spreadsheet colgroup .col-row-num { width: 42px; }
-  .spreadsheet colgroup .col-tool   { width: 180px; }
-  .spreadsheet colgroup .col-score  { width: 100px; }
-  .spreadsheet colgroup .col-dep    { width: 120px; }
-  .spreadsheet colgroup .col-avg    { width: 70px; }
-  .spreadsheet colgroup .col-rating { width: 150px; }
-  .spreadsheet colgroup .col-notes  { width: 240px; }
-
-  /* ─── CELLS ─── */
-  .spreadsheet th, .spreadsheet td {
-    border: 1px solid var(--excel-grid);
-    padding: 4px 6px;
-    text-align: center;
-    vertical-align: middle;
-    height: 28px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    user-select: none;
-  }
-
-  /* ─── ROW NUMBERS ─── */
-  .spreadsheet .row-num {
-    background: var(--excel-row-num-bg);
-    color: var(--excel-row-num-text);
-    font-size: 11px;
-    text-align: center;
-    width: 42px;
-    min-width: 42px;
-    font-weight: 400;
-    border-right: 1px solid #c0c0c0;
-    user-select: none;
-  }
-
-  /* ─── HEADERS ─── */
-  .spreadsheet thead th {
-    background: var(--excel-header-bg);
-    color: var(--excel-header-text);
-    font-weight: 600;
-    font-size: 12px;
-    padding: 6px 6px;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    border-bottom: 2px solid #b0b0b0;
-    cursor: help;
-  }
-  .spreadsheet thead th.col-header-letter {
-    font-weight: 400;
-    font-size: 11px;
-    color: #888;
-    padding: 2px 6px;
-    border-bottom: 1px solid var(--excel-grid);
-  }
-
-  /* ─── DATA CELLS ─── */
-  .spreadsheet td {
-    background: var(--excel-cell-bg);
-    cursor: cell;
-    position: relative;
-  }
-  .spreadsheet td.editable {
-    cursor: cell;
-  }
-  .spreadsheet td.editing {
-    padding: 0;
-  }
-  .spreadsheet td.editing input {
-    width: 100%;
-    height: 100%;
-    border: 2px solid var(--excel-editing-border);
-    outline: none;
-    font-family: var(--font);
-    font-size: 13px;
-    padding: 3px 5px;
-    background: #fff;
-    box-sizing: border-box;
-    text-align: inherit;
-  }
-  .spreadsheet td.selected {
-    outline: 2px solid var(--excel-selected);
-    outline-offset: -1px;
-    z-index: 2;
-    position: relative;
-  }
-
-  .spreadsheet td.calc-cell {
-    background: var(--excel-calc);
-    font-weight: 500;
-    color: #1a5276;
-  }
-
-  .spreadsheet td.tool-name {
-    font-weight: 500;
-    text-align: left;
-    padding-left: 10px;
-  }
-
-  .spreadsheet td.notes-cell {
-    text-align: left;
-    font-size: 12px;
-    color: #444;
-  }
-
-  .spreadsheet tbody tr:nth-child(even) td:not(.row-num) {
-    background-color: var(--excel-alt-row);
-  }
-  .spreadsheet tbody tr:nth-child(even) td.calc-cell {
-    background-color: #eef4fb;
-  }
-
-  /* ─── HOVER ─── */
-  .spreadsheet tbody tr:hover td:not(.row-num) {
-    background-color: #f0f5ff;
-  }
-  .spreadsheet tbody tr:hover td.calc-cell {
-    background-color: #e4edf8;
-  }
-  .spreadsheet tbody tr:hover td.row-num {
-    background: #d8d8d8;
-  }
-
-  /* ─── BAD INPUT ─── */
-  .spreadsheet td.invalid {
-    background: #fff0f0 !important;
-  }
-  .spreadsheet td.invalid::after {
-    content: '⚠';
-    position: absolute;
-    top: 1px;
-    right: 2px;
-    font-size: 10px;
-    color: #d32f2f;
-  }
-
-  /* ─── TOOLTIP ─── */
-  .tooltip-hover {
-    position: relative;
-  }
-  .tooltip-hover:hover::after {
-    content: attr(data-tip);
-    position: absolute;
-    bottom: calc(100% + 6px);
-    left: 50%;
-    transform: translateX(-50%);
-    background: #333;
-    color: #fff;
-    padding: 6px 10px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: 400;
-    white-space: nowrap;
-    z-index: 100;
-    pointer-events: none;
-    box-shadow: 0 2px 6px rgba(0,0,0,.2);
-  }
-  .tooltip-hover:hover::before {
-    content: '';
-    position: absolute;
-    bottom: calc(100% + 2px);
-    left: 50%;
-    transform: translateX(-50%);
-    border: 5px solid transparent;
-    border-top-color: #333;
-    z-index: 100;
-    pointer-events: none;
-  }
-
-  /* ─── PRINCIPLES SECTION ─── */
-  .principles {
-    max-width: 1400px;
-    margin: 20px auto 0;
-    background: #fff;
-    border: 1px solid #c0c0c0;
-    border-radius: 4px;
-    padding: 16px 20px;
-  }
-  .principles summary {
-    font-weight: 600;
-    font-size: 14px;
-    cursor: pointer;
-    color: #1a1a2e;
-    padding: 4px 0;
-    user-select: none;
-  }
-  .principles summary:hover { color: var(--excel-selected); }
-  .principles .content {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 12px;
-    margin-top: 12px;
-  }
-  .principles .principle {
-    padding: 10px 12px;
-    background: #f8f9fb;
-    border-left: 3px solid var(--excel-selected);
-    border-radius: 3px;
-  }
-  .principles .principle h4 {
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 3px;
-    color: #1a1a2e;
-  }
-  .principles .principle p {
-    font-size: 12px;
-    color: #555;
-    line-height: 1.5;
-  }
-
-  /* ─── INFO BANNER ─── */
-  .info-banner {
-    max-width: 1400px;
-    margin: 0 auto 8px;
-    background: #e8f0fe;
-    border: 1px solid #b8d4f0;
-    border-radius: 4px;
-    padding: 10px 16px;
-    font-size: 13px;
-    color: #1a3a5c;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .info-banner strong { font-weight: 600; }
-
-  /* ─── RESPONSIVE ─── */
-  @media (max-width: 768px) {
-    body { padding: 8px; }
-    .app-header h1 { font-size: 18px; }
-    .toolbar { padding: 4px 8px; }
-    .toolbar button { font-size: 11px; padding: 3px 10px; }
-    .formula-bar { font-size: 12px; }
-    .formula-bar .cell-ref { min-width: 36px; font-size: 11px; }
-    .principles .content { grid-template-columns: 1fr; }
-  }
-
-  @media print {
-    body { background: #fff; padding: 0.5in; }
-    .toolbar, .formula-bar, .info-banner { display: none; }
-    .spreadsheet-wrap { border: 1px solid #999; border-radius: 0; }
-    .spreadsheet th { background: #e0e0e0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .spreadsheet td.calc-cell { background: #f0f0ff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .spreadsheet tbody tr:nth-child(even) td { background-color: #f5f5f5 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .spreadsheet td.selected { outline: none; }
-    .principles { border: 1px solid #999; }
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparativa de Herramientas de Vibe Coding</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div class="container">
+        <h1>Comparativa de Herramientas de Vibe Coding</h1>
+        <p class="subtitle">Evaluación en escala 1-5 (5 = mejor)</p>
 
-<div class="app-header">
-  <h1>📊 Eligiendo Sabiamente Tus Herramientas de Vibe Coding</h1>
-  <p>Hacé doble clic en una celda para editar · Tab/Enter para navegar · Exportá a CSV</p>
-</div>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Herramienta</th>
+                        <th>UI/UX</th>
+                        <th>Costo</th>
+                        <th>Velocidad</th>
+                        <th>Dependencia<br>Plataforma</th>
+                        <th>Control</th>
+                        <th>Mantenibilidad</th>
+                        <th>Calidad del<br>Código</th>
+                        <th>Reutilización</th>
+                        <th>Tu Calificación<br>(1-5)</th>
+                        <th>Notas / Justificación</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="section-header">
+                        <td colspan="11">Plataformas de Vibe Coding</td>
+                    </tr>
+                    <tr class="row">
+                        <td>Vercel v0</td>
+                        <td><span class="score score-5">5</span></td>
+                        <td><span class="score score-3">3</span></td>
+                        <td><span class="score score-5">5</span></td>
+                        <td><span class="score score-2">2</span></td>
+                        <td><span class="score score-2">2</span></td>
+                        <td><span class="score score-1">1</span></td>
+                        <td><span class="score score-5">5</span></td>
+                        <td><span class="score score-1">1</span></td>
+                        <td>
+                            <div class="rating-cell">
+                                <span class="score score-unknown rating-display">?</span>
+                                <input type="number" min="1" max="5" class="rating-input" placeholder="?">
+                            </div>
+                        </td>
+                        <td class="notes-cell"><textarea class="notes-input" rows="2" placeholder="Justificá tu calificación..."></textarea></td>
+                    </tr>
+                    <tr class="row">
+                        <td>Replit</td>
+                        <td><span class="score score-4">4</span></td>
+                        <td><span class="score score-1">1</span></td>
+                        <td><span class="score score-4">4</span></td>
+                        <td><span class="score score-1">1</span></td>
+                        <td><span class="score score-1">1</span></td>
+                        <td><span class="score score-3">3</span></td>
+                        <td><span class="score score-5">5</span></td>
+                        <td><span class="score score-1">1</span></td>
+                        <td>
+                            <div class="rating-cell">
+                                <span class="score score-unknown rating-display">?</span>
+                                <input type="number" min="1" max="5" class="rating-input" placeholder="?">
+                            </div>
+                        </td>
+                        <td class="notes-cell"><textarea class="notes-input" rows="2" placeholder="Justificá tu calificación..."></textarea></td>
+                    </tr>
+                    <tr class="row">
+                        <td>Lovable</td>
+                        <td><span class="score score-5">5</span></td>
+                        <td><span class="score score-3">3</span></td>
+                        <td><span class="score score-4">4</span></td>
+                        <td><span class="score score-unknown">?</span></td>
+                        <td><span class="score score-3">3</span></td>
+                        <td><span class="score score-3">3</span></td>
+                        <td><span class="score score-4">4</span></td>
+                        <td><span class="score score-1">1</span></td>
+                        <td>
+                            <div class="rating-cell">
+                                <span class="score score-unknown rating-display">?</span>
+                                <input type="number" min="1" max="5" class="rating-input" placeholder="?">
+                            </div>
+                        </td>
+                        <td class="notes-cell"><textarea class="notes-input" rows="2" placeholder="Justificá tu calificación..."></textarea></td>
+                    </tr>
+                    <tr class="row">
+                        <td>Windsurf</td>
+                        <td><span class="score score-3">3</span></td>
+                        <td><span class="score score-5">5</span></td>
+                        <td><span class="score score-3">3</span></td>
+                        <td><span class="score score-5">5</span></td>
+                        <td><span class="score score-5">5</span></td>
+                        <td><span class="score score-5">5</span></td>
+                        <td><span class="score score-5">5</span></td>
+                        <td><span class="score score-5">5</span></td>
+                        <td>
+                            <div class="rating-cell">
+                                <span class="score score-unknown rating-display">?</span>
+                                <input type="number" min="1" max="5" class="rating-input" placeholder="?">
+                            </div>
+                        </td>
+                        <td class="notes-cell"><textarea class="notes-input" rows="2" placeholder="Justificá tu calificación..."></textarea></td>
+                    </tr>
+                    <tr class="row">
+                        <td>Cursor</td>
+                        <td><span class="score score-2">2</span></td>
+                        <td><span class="score score-4">4</span></td>
+                        <td><span class="score score-3">3</span></td>
+                        <td><span class="score score-5">5</span></td>
+                        <td><span class="score score-4">4</span></td>
+                        <td><span class="score score-5">5</span></td>
+                        <td><span class="score score-4">4</span></td>
+                        <td><span class="score score-5">5</span></td>
+                        <td>
+                            <div class="rating-cell">
+                                <span class="score score-unknown rating-display">?</span>
+                                <input type="number" min="1" max="5" class="rating-input" placeholder="?">
+                            </div>
+                        </td>
+                        <td class="notes-cell"><textarea class="notes-input" rows="2" placeholder="Justificá tu calificación..."></textarea></td>
+                    </tr>
 
-<div class="info-banner">
-  <strong>💡</strong>
-  <span>Los valores ya cargados son de la lección <em>"Mis Herramientas de Vibe Coding Preferidas"</em>. Agregá tus propias herramientas y ajustá las puntuaciones.</span>
-</div>
+                    <tr class="section-header">
+                        <td colspan="11">Mi Stack de AI</td>
+                    </tr>
+                    <tr class="row">
+                        <td>OpenCode (Gentle AI)</td>
+                        <td><span class="score score-2">2</span></td>
+                        <td><span class="score score-4">4</span></td>
+                        <td><span class="score score-4">4</span></td>
+                        <td><span class="score score-5">5</span></td>
+                        <td><span class="score score-5">5</span></td>
+                        <td><span class="score score-4">4</span></td>
+                        <td><span class="score score-4">4</span></td>
+                        <td><span class="score score-5">5</span></td>
+                        <td>
+                            <div class="rating-cell">
+                                <span class="score score-unknown rating-display">?</span>
+                                <input type="number" min="1" max="5" class="rating-input" placeholder="?">
+                            </div>
+                        </td>
+                        <td class="notes-cell"><textarea class="notes-input" rows="2" placeholder="Justificá tu calificación..."></textarea></td>
+                    </tr>
+                    <tr class="row">
+                        <td>Claude Code (gratis)</td>
+                        <td><span class="score score-2">2</span></td>
+                        <td><span class="score score-5">5</span></td>
+                        <td><span class="score score-3">3</span></td>
+                        <td><span class="score score-3">3</span></td>
+                        <td><span class="score score-3">3</span></td>
+                        <td><span class="score score-3">3</span></td>
+                        <td><span class="score score-4">4</span></td>
+                        <td><span class="score score-2">2</span></td>
+                        <td>
+                            <div class="rating-cell">
+                                <span class="score score-unknown rating-display">?</span>
+                                <input type="number" min="1" max="5" class="rating-input" placeholder="?">
+                            </div>
+                        </td>
+                        <td class="notes-cell"><textarea class="notes-input" rows="2" placeholder="Justificá tu calificación..."></textarea></td>
+                    </tr>
+                    <tr class="row">
+                        <td>Gemini</td>
+                        <td><span class="score score-3">3</span></td>
+                        <td><span class="score score-4">4</span></td>
+                        <td><span class="score score-4">4</span></td>
+                        <td><span class="score score-2">2</span></td>
+                        <td><span class="score score-3">3</span></td>
+                        <td><span class="score score-3">3</span></td>
+                        <td><span class="score score-3">3</span></td>
+                        <td><span class="score score-2">2</span></td>
+                        <td>
+                            <div class="rating-cell">
+                                <span class="score score-unknown rating-display">?</span>
+                                <input type="number" min="1" max="5" class="rating-input" placeholder="?">
+                            </div>
+                        </td>
+                        <td class="notes-cell"><textarea class="notes-input" rows="2" placeholder="Justificá tu calificación..."></textarea></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-<div class="toolbar">
-  <button onclick="addRow()" title="Agregar herramienta">➕ Agregar</button>
-  <button onclick="deleteRow()" title="Eliminar herramienta seleccionada">✖ Eliminar</button>
-  <div class="sep"></div>
-  <button onclick="exportCSV()" title="Exportar a CSV">⬇ Exportar CSV</button>
-  <button onclick="resetData()" title="Restablecer datos iniciales">↺ Restablecer</button>
-  <span class="status-info" id="statusInfo">Listo</span>
-</div>
-
-<div class="formula-bar">
-  <span class="cell-ref" id="cellRef">—</span>
-  <div class="cell-content" id="formulaInput" contenteditable spellcheck="false"></div>
-</div>
-
-<div class="spreadsheet-wrap">
-<table class="spreadsheet" id="sheet">
-  <colgroup>
-    <col class="col-row-num">
-    <col class="col-tool">
-    <col class="col-score"><col class="col-score">
-    <col class="col-score"><col class="col-dep">
-    <col class="col-score"><col class="col-score">
-    <col class="col-score"><col class="col-score">
-    <col class="col-avg">
-    <col class="col-rating">
-    <col class="col-notes">
-  </colgroup>
-  <thead>
-    <tr id="headerLetters"></tr>
-    <tr id="headerNames"></tr>
-  </thead>
-  <tbody id="sheetBody"></tbody>
-</table>
-</div>
-
-<div class="principles">
-  <details>
-    <summary>📖 Principios Clave a Recordar</summary>
-    <div class="content">
-      <div class="principle">
-        <h4>¿"Vibing" o Ingeniería?</h4>
-        <p>Adaptá la fortaleza de la herramienta a la naturaleza de tu proyecto. No todas las herramientas son para todo.</p>
-      </div>
-      <div class="principle">
-        <h4>Una Herramienta para Gobernarlas a Todas (¡Casi!)</h4>
-        <p>Buscá profundidad con unas pocas herramientas clave. No necesitás veinte herramientas para hacer un buen trabajo.</p>
-      </div>
-      <div class="principle">
-        <h4>No Olvides las Bibliotecas</h4>
-        <p>Las bibliotecas de codificación estándar a menudo pueden ser alternativas potentes y rentables.</p>
-      </div>
-      <div class="principle">
-        <h4>Ciclo de Vida Completo</h4>
-        <p>Considerá herramientas para marketing y automatización, no solo para construir.</p>
-      </div>
-      <div class="principle">
-        <h4>El Toque Humano es Clave</h4>
-        <p>Tu intuición y pruebas exhaustivas son irremplazables. La IA es una herramienta, no un reemplazo.</p>
-      </div>
+        <footer>
+            Generado como parte de la comparativa de herramientas de Vibe Coding — 4Geeks Academy
+        </footer>
     </div>
-  </details>
-</div>
 
-<script>
-(function() {
-  'use strict';
-
-  /* ─── CONFIG ─── */
-  const COLUMNS = [
-    { key: 'tool',      label: 'Herramienta',                    short: 'A', tip: 'Nombre de la herramienta que estás evaluando' },
-    { key: 'uiux',      label: 'UI/UX',                          short: 'B', tip: 'Calificación de la interfaz de usuario y experiencia general (1-5)' },
-    { key: 'costo',     label: 'Costo',                          short: 'C', tip: 'Relación costo-beneficio de la herramienta (1-5)' },
-    { key: 'velocidad', label: 'Velocidad',                      short: 'D', tip: 'Rapidez de generación y respuesta (1-5)' },
-    { key: 'depPlat',   label: 'Dependencia de Plataforma',      short: 'E', tip: '¿Qué tan atada está a un ecosistema específico? (1=muy atada, 5=independiente)' },
-    { key: 'control',   label: 'Control',                        short: 'F', tip: 'Nivel de control sobre el resultado final (1-5)' },
-    { key: 'manten',    label: 'Mentalidad',                     short: 'G', tip: 'Mentalidad: adaptabilidad y facilidad de uso de la herramienta (1-5)' },
-    { key: 'calidad',   label: 'Calidad del Código',             short: 'H', tip: 'Calidad del código generado por la herramienta (1-5)' },
-    { key: 'reutiliz',  label: 'Reutilización',                  short: 'I', tip: 'Capacidad de reutilizar componentes generados (1-5)' },
-    { key: 'promedio',  label: 'Promedio',                       short: 'J', tip: 'Promedio automático de los puntajes (1-5) — se calcula solo', auto: true },
-    { key: 'miRating',  label: 'Tu Calificación para Tus Necesidades (1-5)', short: 'K', tip: 'Tu calificación personal basada en tus necesidades específicas (1-5)' },
-    { key: 'notas',     label: 'Notas/Justificación',            short: 'L', tip: 'Notas personales sobre por qué elegiste esta calificación' },
-  ];
-
-  // Column indices (0-based, excluding row number)
-  const COL_TOOL     = 0;
-  const COL_SCORE_START = 1; // uiux
-  const COL_SCORE_END   = 8; // reutiliz (inclusive)
-  const COL_AVG      = 9;
-  const COL_RATING   = 10;
-  const COL_NOTES    = 11;
-
-  const INITIAL_DATA = [
-    { tool: 'Vercel v0',  uiux:5, costo:3, velocidad:5, depPlat:2, control:2, manten:1, calidad:5, reutiliz:1, miRating:'', notas:'' },
-    { tool: 'Replit',     uiux:4, costo:1, velocidad:4, depPlat:1, control:1, manten:3, calidad:5, reutiliz:1, miRating:'', notas:'' },
-    { tool: 'Lovable',    uiux:5, costo:3, velocidad:4, depPlat:'', control:3, manten:3, calidad:4, reutiliz:1, miRating:'', notas:'Dep. Plataforma: ?' },
-    { tool: 'Windsurf',   uiux:3, costo:5, velocidad:3, depPlat:5, control:5, manten:5, calidad:5, reutiliz:5, miRating:'', notas:'' },
-    { tool: 'Cursor',     uiux:2, costo:4, velocidad:3, depPlat:5, control:4, manten:5, calidad:4, reutiliz:5, miRating:'', notas:'' },
-    { tool: 'Claude',     uiux:5, costo:5, velocidad:5, depPlat:5, control:5, manten:5, calidad:5, reutiliz:5, miRating:5, notas:'Se ajusta a lo que se le pide, sin bucles' },
-    { tool: 'Gemini',     uiux:5, costo:5, velocidad:2, depPlat:'', control:'', manten:'', calidad:'', reutiliz:'', miRating:'', notas:'' },
-    { tool: '',           uiux:'', costo:'', velocidad:'', depPlat:'', control:'', manten:'', calidad:'', reutiliz:'', miRating:'', notas:'' },
-    { tool: 'Multiagentes', uiux:'', costo:'', velocidad:'', depPlat:'', control:'', manten:'', calidad:'', reutiliz:'', miRating:'', notas:'' },
-  ];
-
-  /* ─── STATE ─── */
-  let data = [];
-  let selectedRow = -1;
-  let selectedCol = -1;
-  let editing = false;
-  let suppressFormulaUpdate = false; // prevent loop when formula bar updates cell
-
-  const COL_COUNT = COLUMNS.length;
-
-  /* ─── HELPERS ─── */
-  function colLetter(index) {
-    return COLUMNS[index]?.short || String.fromCharCode(65 + index);
-  }
-  function isScoreKey(key) {
-    return ['uiux','costo','velocidad','depPlat','control','manten','calidad','reutiliz'].includes(key);
-  }
-  function parseScore(v) {
-    if (v === '' || v === null || v === undefined) return null;
-    const n = Number(v);
-    return Number.isFinite(n) && n >= 1 && n <= 5 ? n : null;
-  }
-  function formatScore(v) {
-    if (v === '' || v === null || v === undefined) return '';
-    return v.toString();
-  }
-  function calcAverage(row) {
-    let sum = 0, count = 0;
-    for (let i = COL_SCORE_START; i <= COL_SCORE_END; i++) {
-      const key = COLUMNS[i].key;
-      const val = parseScore(row[key]);
-      if (val !== null) { sum += val; count++; }
-    }
-    return count > 0 ? (sum / count) : null;
-  }
-
-  /* ─── RENDER ─── */
-  function render() {
-    renderHeaders();
-    renderBody();
-    updateStatus();
-  }
-
-  function renderHeaders() {
-    // Letter row
-    const letterRow = document.getElementById('headerLetters');
-    letterRow.innerHTML = '<th class="row-num col-header-letter"></th>' +
-      COLUMNS.map((c, i) =>
-        `<th class="col-header-letter">${c.short}</th>`
-      ).join('');
-
-    // Name row with tooltips
-    const nameRow = document.getElementById('headerNames');
-    nameRow.innerHTML = '<th class="row-num"></th>' +
-      COLUMNS.map((c, i) => {
-        const tip = c.tip || '';
-        const isAuto = c.auto ? ' auto' : '';
-        return `<th class="tooltip-hover${isAuto}" data-tip="${escAttr(tip)}">${escHtml(c.label)}</th>`;
-      }).join('');
-  }
-
-  function renderBody() {
-    const tbody = document.getElementById('sheetBody');
-    tbody.innerHTML = '';
-
-    data.forEach((row, rIdx) => {
-      const tr = document.createElement('tr');
-
-      // Row number
-      const tdNum = document.createElement('td');
-      tdNum.className = 'row-num';
-      tdNum.textContent = rIdx + 1;
-      tr.appendChild(tdNum);
-
-      COLUMNS.forEach((col, cIdx) => {
-        const td = document.createElement('td');
-        const val = row[col.key];
-
-        if (col.key === 'tool') {
-          td.className = 'tool-name editable';
-          td.textContent = val || '';
-        } else if (col.key === 'promedio') {
-          td.className = 'calc-cell';
-          const avg = calcAverage(row);
-          td.textContent = avg !== null ? avg.toFixed(1) : '';
-        } else if (col.key === 'notas') {
-          td.className = 'notes-cell editable';
-          td.textContent = val || '';
-        } else {
-          td.className = 'editable';
-          td.textContent = formatScore(val);
-        }
-
-        td.dataset.row = rIdx;
-        td.dataset.col = cIdx;
-
-        td.addEventListener('click', () => selectCell(rIdx, cIdx));
-        td.addEventListener('dblclick', () => startEdit(rIdx, cIdx));
-
-        if (selectedRow === rIdx && selectedCol === cIdx) {
-          td.classList.add('selected');
-        }
-
-        tr.appendChild(td);
-      });
-
-      tbody.appendChild(tr);
-    });
-  }
-
-  function escHtml(s) {
-    const d = document.createElement('div');
-    d.textContent = s;
-    return d.innerHTML;
-  }
-  function escAttr(s) {
-    return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-  }
-
-  /* ─── SELECTION ─── */
-  function selectCell(r, c) {
-    if (editing) return;
-    selectedRow = r;
-    selectedCol = c;
-    updateSelectionUI();
-    updateFormulaBar();
-    document.getElementById('cellRef').textContent = c >= 0 ? `${colLetter(c)}${r + 1}` : '—';
-  }
-
-  function updateSelectionUI() {
-    document.querySelectorAll('#sheetBody td').forEach(td => td.classList.remove('selected'));
-    if (selectedRow >= 0 && selectedCol >= 0) {
-      const selector = `#sheetBody tr:nth-child(${selectedRow + 1}) td:nth-child(${selectedCol + 2})`;
-      const cell = document.querySelector(selector);
-      if (cell) cell.classList.add('selected');
-    }
-  }
-
-  function updateFormulaBar() {
-    if (selectedRow < 0 || selectedCol < 0 || selectedCol === COL_AVG) {
-      document.getElementById('formulaInput').textContent = '';
-      return;
-    }
-    const col = COLUMNS[selectedCol];
-    const val = data[selectedRow][col.key];
-    const display = col.key === 'tool' || col.key === 'notas'
-      ? (val || '')
-      : formatScore(val);
-    document.getElementById('formulaInput').textContent = display;
-  }
-
-  /* ─── EDITING ─── */
-  function startEdit(r, c) {
-    if (c === COL_AVG) return; // auto column, can't edit
-    editing = true;
-    selectedRow = r;
-    selectedCol = c;
-    render();
-
-    const cell = getCellElement(r, c);
-    if (!cell) return;
-    cell.classList.add('editing');
-
-    const col = COLUMNS[c];
-    const val = data[r][col.key];
-    const display = col.key === 'tool' || col.key === 'notas'
-      ? (val || '')
-      : formatScore(val);
-
-    cell.innerHTML = '';
-    const input = document.createElement('input');
-    input.type = col.key === 'tool' || col.key === 'notas' ? 'text' : 'number';
-    if (input.type === 'number') {
-      input.min = 0;
-      input.max = 5;
-      input.step = 1;
-    }
-    input.value = display;
-    cell.appendChild(input);
-    input.focus();
-    input.select();
-
-    const commit = () => {
-      const raw = input.value.trim();
-      finishEdit(r, c, raw);
-    };
-
-    input.addEventListener('blur', commit);
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        input.blur();
-        // Move to next row or cell after commit
-        setTimeout(() => {
-          const nextR = r + 1 < data.length ? r + 1 : r;
-          const nextC = c;
-          if (nextR !== r || nextC !== c) {
-            selectCell(nextR, nextC);
-            startEdit(nextR, nextC);
-          } else {
-            selectCell(r, c);
-          }
-        }, 10);
-      } else if (e.key === 'Tab') {
-        e.preventDefault();
-        input.blur();
-        setTimeout(() => {
-          const dir = e.shiftKey ? -1 : 1;
-          let nextC = c + dir;
-          let nextR = r;
-          if (nextC < 0) { nextC = COL_COUNT - 1; nextR = r - 1; }
-          if (nextC >= COL_COUNT) { nextC = 0; nextR = r + 1; }
-          if (nextR < 0 || nextR >= data.length) {
-            selectCell(r, c); return;
-          }
-          if (nextC === COL_AVG) { nextC += dir; } // skip avg column
-          if (nextC < 0 || nextC >= COL_COUNT) { selectCell(r, c); return; }
-          selectCell(nextR, nextC);
-          startEdit(nextR, nextC);
-        }, 10);
-      } else if (e.key === 'Escape') {
-        e.preventDefault();
-        input.value = col.key === 'tool' || col.key === 'notas'
-          ? (data[r][col.key] || '')
-          : formatScore(data[r][col.key]);
-        input.blur();
-        cancelEdit(r, c);
-      }
-    });
-  }
-
-  function finishEdit(r, c, raw) {
-    const col = COLUMNS[c];
-    if (col.key === 'tool' || col.key === 'notas') {
-      data[r][col.key] = raw;
-    } else {
-      // Validate score 1-5
-      if (raw === '' || raw === null || raw === undefined) {
-        data[r][col.key] = '';
-      } else {
-        const n = Number(raw);
-        if (Number.isFinite(n) && n >= 0 && n <= 5) {
-          data[r][col.key] = n;
-        } else {
-          data[r][col.key] = raw; // store as-is, will show as invalid
-        }
-      }
-    }
-    editing = false;
-    render();
-    selectCell(r, c);
-  }
-
-  function cancelEdit(r, c) {
-    editing = false;
-    render();
-    selectCell(r, c);
-  }
-
-  function getCellElement(r, c) {
-    return document.querySelector(`#sheetBody tr:nth-child(${r + 1}) td:nth-child(${c + 2})`);
-  }
-
-  /* ─── FORMULA BAR SYNC ─── */
-  document.getElementById('formulaInput').addEventListener('input', function() {
-    if (selectedRow < 0 || selectedCol < 0 || selectedCol === COL_AVG) return;
-    if (!editing) {
-      // Update cell directly from formula bar
-      const col = COLUMNS[selectedCol];
-      const raw = this.textContent;
-      if (col.key === 'tool' || col.key === 'notas') {
-        data[selectedRow][col.key] = raw;
-      } else {
-        const n = Number(raw);
-        data[selectedRow][col.key] = (raw === '' || raw === null) ? '' : (Number.isFinite(n) ? n : raw);
-      }
-      render();
-      selectCell(selectedRow, selectedCol);
-    }
-  });
-
-  /* ─── KEYBOARD NAVIGATION ─── */
-  document.addEventListener('keydown', (e) => {
-    if (editing) return;
-    if (selectedRow < 0 || selectedCol < 0) return;
-
-    const handlers = {
-      ArrowUp:    () => moveTo(selectedRow - 1, selectedCol),
-      ArrowDown:  () => moveTo(selectedRow + 1, selectedCol),
-      ArrowLeft:  () => moveTo(selectedRow, selectedCol - 1),
-      ArrowRight: () => moveTo(selectedRow, selectedCol + 1),
-      Enter:      () => { e.preventDefault(); moveTo(selectedRow + 1, selectedCol); },
-      Tab:        () => {
-        e.preventDefault();
-        const dir = e.shiftKey ? -1 : 1;
-        let nc = selectedCol + dir;
-        let nr = selectedRow;
-        if (nc < 0) { nc = COL_COUNT - 1; nr--; }
-        if (nc >= COL_COUNT) { nc = 0; nr++; }
-        if (nc === COL_AVG) nc += dir;
-        if (nc < 0 || nc >= COL_COUNT || nr < 0 || nr >= data.length) return;
-        moveTo(nr, nc);
-      },
-      F2:         () => { e.preventDefault(); startEdit(selectedRow, selectedCol); },
-      Delete:     () => {
-        const col = COLUMNS[selectedCol];
-        if (col.auto) return;
-        data[selectedRow][col.key] = col.key === 'tool' || col.key === 'notas' ? '' : '';
-        render();
-        selectCell(selectedRow, selectedCol);
-      },
-    };
-
-    const fn = handlers[e.key];
-    if (fn) fn();
-  });
-
-  function moveTo(r, c) {
-    if (c === COL_AVG) c++;
-    if (r < 0) r = 0;
-    if (r >= data.length) r = data.length - 1;
-    if (c < 0) c = 0;
-    if (c >= COL_COUNT) c = COL_COUNT - 1;
-    if (c === COL_AVG) c = c + 1 < COL_COUNT ? c + 1 : c - 1;
-    selectCell(r, c);
-  }
-
-  /* ─── ACTIONS ─── */
-  window.addRow = function() {
-    const empty = {};
-    COLUMNS.forEach(c => { empty[c.key] = c.key === 'tool' || c.key === 'notas' ? '' : ''; });
-    data.push(empty);
-    render();
-    selectCell(data.length - 1, 0);
-    updateStatus('Herramienta agregada');
-  };
-
-  window.deleteRow = function() {
-    if (selectedRow < 0 || data.length <= 0) return;
-    if (data.length <= 1) { updateStatus('Debe haber al menos una herramienta'); return; }
-    if (!confirm(`¿Eliminar "${data[selectedRow].tool || 'herramienta ' + (selectedRow+1)}"?`)) return;
-    data.splice(selectedRow, 1);
-    if (selectedRow >= data.length) selectedRow = data.length - 1;
-    render();
-    if (selectedRow >= 0) selectCell(selectedRow, Math.min(selectedCol, COL_COUNT - 1));
-    updateStatus('Herramienta eliminada');
-  };
-
-  window.exportCSV = function() {
-    const headers = COLUMNS.map(c => c.label);
-    headers.unshift('#');
-    const rows = data.map((row, idx) => {
-      const vals = COLUMNS.map(c => {
-        let v = row[c.key];
-        if (c.key === 'promedio') v = calcAverage(row);
-        if (v === null || v === undefined) v = '';
-        const s = String(v);
-        return s.includes(',') || s.includes('"') ? `"${s.replace(/"/g, '""')}"` : s;
-      });
-      vals.unshift(idx + 1);
-      return vals.join(',');
-    });
-    const csv = [headers.join(','), ...rows].join('\r\n');
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'vibe-coding-tools.csv';
-    link.click();
-    URL.revokeObjectURL(link.href);
-    updateStatus('CSV exportado');
-  };
-
-  window.resetData = function() {
-    if (!confirm('¿Restablecer todos los datos a los valores iniciales?')) return;
-    data = INITIAL_DATA.map(r => ({ ...r }));
-    selectedRow = 0;
-    selectedCol = 0;
-    render();
-    updateStatus('Datos restablecidos');
-  };
-
-  function updateStatus(msg) {
-    const el = document.getElementById('statusInfo');
-    if (msg) {
-      el.textContent = msg;
-      setTimeout(() => updateStatus(), 2500);
-    } else {
-      el.textContent = `Filas: ${data.length} · Columnas: ${COL_COUNT}`;
-    }
-  }
-
-  /* ─── CLICK OUTSIDE ─── */
-  document.addEventListener('click', (e) => {
-    if (editing) return;
-    if (!e.target.closest('.spreadsheet') && !e.target.closest('.formula-bar')) {
-      // don't deselect, but allow
-    }
-  });
-
-  /* ─── INIT ─── */
-  data = INITIAL_DATA.map(r => ({ ...r }));
-  selectedRow = 0;
-  selectedCol = 0;
-  render();
-  selectCell(0, 0);
-  updateStatus();
-
-})();
-</script>
+    <script src="app.js"></script>
 </body>
 </html>

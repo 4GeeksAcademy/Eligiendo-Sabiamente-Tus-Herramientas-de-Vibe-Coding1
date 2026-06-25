@@ -1,0 +1,256 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background-color: #f9fafb;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+}
+
+.container {
+    max-width: 72rem;
+    margin: 0 auto;
+}
+
+h1 {
+    font-size: 1.875rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    color: #1f2937;
+}
+
+.subtitle {
+    text-align: center;
+    color: #6b7280;
+    margin-bottom: 2rem;
+    font-size: 0.875rem;
+}
+
+/* Table */
+.table-wrapper {
+    background: #fff;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    font-size: 0.875rem;
+    min-width: 900px;
+}
+
+thead tr {
+    background: linear-gradient(to right, #4f46e5, #9333ea);
+    color: #fff;
+}
+
+th {
+    padding: 1rem 0.75rem;
+    text-align: center;
+    font-weight: 600;
+}
+
+th:first-child {
+    text-align: left;
+}
+
+.section-header {
+    background: #f3f4f6;
+}
+
+.section-header td {
+    padding: 0.5rem 1rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+tbody tr.row {
+    border-bottom: 1px solid #f3f4f6;
+    transition: background 0.15s;
+}
+
+tbody tr.row:hover {
+    background: #f9fafb;
+}
+
+td {
+    padding: 0.75rem;
+    text-align: center;
+    vertical-align: middle;
+}
+
+td:first-child {
+    text-align: left;
+    font-weight: 500;
+    color: #1f2937;
+}
+
+.notes-cell {
+    text-align: left;
+    font-size: 0.8rem;
+    color: #6b7280;
+    max-width: 200px;
+    white-space: normal;
+}
+
+.rating-input {
+    width: 3rem;
+    padding: 0.25rem;
+    text-align: center;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    background: #f9fafb;
+    transition: border-color 0.15s;
+    display: none;
+}
+
+.rating-input:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+.rating-cell {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.rating-display {
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.rating-display:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.notes-input {
+    width: 100%;
+    padding: 0.375rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 0.8rem;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 2.5rem;
+    background: #f9fafb;
+    transition: border-color 0.15s;
+}
+
+.notes-input:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+/* Score badges */
+.score {
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 9999px;
+    font-weight: 700;
+    line-height: 2rem;
+    text-align: center;
+    font-size: 0.875rem;
+}
+
+.score-5 { background: #dcfce7; color: #15803d; }
+.score-4 { background: #ecfccb; color: #4d7c0f; }
+.score-3 { background: #fef9c3; color: #a16207; }
+.score-2 { background: #fee2e2; color: #b91c1c; }
+.score-1 { background: #fee2e2; color: #b91c1c; }
+.score-unknown { background: #f3f4f6; color: #6b7280; }
+
+/* Legend */
+.legend {
+    margin-top: 1.5rem;
+    background: #fff;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+}
+
+.legend h2 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 1rem;
+}
+
+.legend-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    font-size: 0.875rem;
+}
+
+@media (min-width: 768px) {
+    .legend-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.legend-item strong {
+    color: #374151;
+}
+
+.legend-item p {
+    color: #6b7280;
+    font-size: 0.75rem;
+}
+
+/* Notes */
+.notes {
+    margin-top: 1.5rem;
+    background: #eef2ff;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    border: 1px solid #e0e7ff;
+}
+
+.notes h2 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #3730a3;
+    margin-bottom: 0.75rem;
+}
+
+.notes ul {
+    list-style: none;
+    font-size: 0.875rem;
+    color: #4338ca;
+}
+
+.notes li {
+    margin-bottom: 0.5rem;
+    padding-left: 1rem;
+    position: relative;
+}
+
+.notes li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: #6366f1;
+}
+
+footer {
+    margin-top: 2rem;
+    text-align: center;
+    font-size: 0.75rem;
+    color: #9ca3af;
+}
